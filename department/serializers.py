@@ -1,8 +1,6 @@
 from collections import OrderedDict
 
 from rest_framework import serializers
-from rest_framework.fields import SkipField
-from rest_framework.relations import PKOnlyObject
 
 from .models import Department
 

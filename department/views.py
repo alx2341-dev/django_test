@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .models import Department, Consumer
-from .serializers import DepartmentSerializer, CategorySerializer
+from .serializers import CategorySerializer
 
 
 class DepartmentView(APIView):
