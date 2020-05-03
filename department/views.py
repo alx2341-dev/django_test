@@ -13,7 +13,7 @@ class DepartmentView(APIView):
     :param request:
     :return:
     """
-
+    #
     def get(self, request):
         if self.request.method == 'GET':
             root_id = self.request.GET.get('root-id', None)
