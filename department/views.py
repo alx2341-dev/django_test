@@ -16,9 +16,9 @@ class DepartmentView(APIView):
     #
     def get(self, request):
         if self.request.method == 'GET':
-            test = Department.objects.prefetch_related('consumer_set').all()
+            departments = Department.objects.all().prefetch_related('entries')
             root_id = self.request.GET.get('root-id', None)
-            departments = Department.objects.get(id=root_id).get_descendants(include_self=True)
+            departments = departments.get(id=root_id).get_descendants(include_self=True)
             departments_consumers = {y.id: y.entries.all()
                                      for y in departments}  # type: dict
             departments_consumers = {k: v.values('id', 'first_name', 'last_name')
