@@ -2,16 +2,22 @@ from collections import OrderedDict
 
 from rest_framework import serializers
 
-from .models import Department
+from .models import Department, Consumer
 
 
-class DepartmentSerializer(serializers.Serializer):
+class DepartmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Department
-        fields = ['name']
+        fields = ['id', 'name', 'parent']
 
 
-class CategorySerializer(serializers.ModelSerializer):
+class ConsumerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Consumer
+        fields = ['id', 'first_name', 'last_name', 'department']
+
+
+class HierarchyDepartmentSerializer(serializers.ModelSerializer):
     counter = 0
 
     employees = serializers.SerializerMethodField(read_only=True)
@@ -26,8 +32,8 @@ class CategorySerializer(serializers.ModelSerializer):
         fields = ('id', 'name', 'parent', 'employees', 'children_departments')
 
     def get_fields(self):
-        fields = super(CategorySerializer, self).get_fields()
-        fields['children_departments'] = CategorySerializer(many=True)
+        fields = super(HierarchyDepartmentSerializer, self).get_fields()
+        fields['children_departments'] = HierarchyDepartmentSerializer(many=True)
         return fields
 
     def to_representation(self, instance):
