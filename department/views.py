@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .models import Department, Consumer
-from .serializers import HierarchyDepartmentSerializer, DepartmentSerializer
+from .serializers import HierarchyDepartmentSerializer, DepartmentSerializer, ConsumerSerializer
 
 
 class HierarchyDepartmentView(APIView):
@@ -21,7 +21,10 @@ class HierarchyDepartmentView(APIView):
         if self.request.method == 'GET':
             departments = Department.objects.all().prefetch_related('entries')
             root_id = self.request.GET.get('root-id', None)
-            departments = departments.get(id=root_id).get_descendants(include_self=True)
+            try:
+                departments = departments.get(id=root_id).get_descendants(include_self=True)
+            except Department.DoesNotExist:
+                return Response()
             departments_consumers = {y.id: y.entries.all()
                                      for y in departments}  # type: dict
             departments_consumers = {k: v.values('id', 'first_name', 'last_name')
@@ -39,3 +42,8 @@ class HierarchyDepartmentView(APIView):
 class DepartmentViewSet(viewsets.ModelViewSet):
     queryset = Department.objects.all()
     serializer_class = DepartmentSerializer
+
+
+class ConsumerViewSet(viewsets.ModelViewSet):
+    queryset = Consumer.objects.all()
+    serializer_class = ConsumerSerializer
